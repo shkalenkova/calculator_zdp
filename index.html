@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор дохода для ZDP | Voinova.tax</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sage:#9DB79E;
+    --sage-dark:#7E9C81;
+    --soft-green:#E8F1E9;
+    --light-blue:#E6EEF6;
+    --camel:#D8B892;
+    --camel-dark:#C79F70;
+    --teal:#6F8F8D;
+    --ink:#333333;
+    --chrome:#F2F3F5;
+    --cream:#FAF8F4;
+    --white:#FFFFFF;
+    --pass:#5E8C6A;
+    --fail:#B5654A;
+    --summary-bg:#4F6B69;
+    --summary-bg2:#3F5654;
+    --radius:16px;
+    --radius-sm:10px;
+    --shadow:0 2px 14px rgba(51,51,51,0.06);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Merriweather',serif;
+    font-weight:700;
+    line-height:1.25;
+    margin:0 0 .5em;
+    color:#26302B;
+  }
+  p{margin:0 0 1em;}
+  a{color:var(--teal);}
+  .wrap{max-width:920px;margin:0 auto;padding:0 24px;}
+
+  /* ---- Header ---- */
+  header.site{
+    background:var(--white);
+    border-bottom:1px solid #ECE7DD;
+  }
+  .site-bar{
+    max-width:1100px;margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .logo{display:flex;align-items:center;gap:10px;}
+  .logo-mark{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--soft-green);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Merriweather',serif;font-weight:700;color:var(--sage-dark);
+  }
+  .logo-text{font-family:'Merriweather',serif;font-weight:700;font-size:17px;}
+  .logo-sub{font-size:11px;color:#8B8B8B;letter-spacing:.02em;margin-top:-2px;}
+  .site-bar a.cta-ghost{
+    border:1px solid var(--ink);
+    padding:9px 18px;border-radius:999px;
+    font-size:14px;font-weight:600;text-decoration:none;color:var(--ink);
+    white-space:nowrap;
+  }
+  @media(max-width:480px){
+    .site-bar{flex-wrap:wrap;gap:10px;padding:14px 16px;}
+    .site-bar a.cta-ghost{padding:8px 14px;font-size:13px;}
+    .logo-text{font-size:15px;}
+    .logo-sub{font-size:10px;}
+  }
+
+  /* ---- Hero ---- */
+  .hero{padding:56px 0 40px;}
+  .eyebrow{
+    display:inline-block;background:var(--soft-green);color:var(--sage-dark);
+    padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:18px;
+  }
+  .hero h1{font-size:36px;max-width:680px;}
+  .hero .lead{font-size:17px;max-width:640px;color:#4B4B4B;}
+  .hero-note{
+    margin-top:22px;background:var(--white);border:1px solid #ECE7DD;
+    border-radius:var(--radius);padding:16px 20px;font-size:14px;color:#555;
+    display:flex;gap:12px;align-items:flex-start;
+  }
+  .hero-note .dot{
+    flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--camel);margin-top:6px;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+    padding:13px 26px;border-radius:999px;font-family:'Inter',sans-serif;
+    font-size:15px;font-weight:600;text-decoration:none;
+  }
+  .btn-primary{background:var(--sage);color:#1E2A20;}
+  .btn-primary:hover{background:var(--sage-dark);}
+  .btn-secondary{background:var(--camel);color:#3A2A18;}
+  .btn-secondary:hover{background:var(--camel-dark);}
+  .btn-ghost{background:transparent;border:1px solid #C9C4B8;color:var(--ink);}
+
+  /* ---- Section shell ---- */
+  section{padding:40px 0;}
+  .card{
+    background:var(--white);border:1px solid #ECE7DD;border-radius:var(--radius);
+    padding:26px 26px;box-shadow:var(--shadow);
+  }
+  .section-title{font-size:24px;margin-bottom:6px;}
+  .section-sub{color:#6B6B6B;font-size:14.5px;margin-bottom:24px;max-width:640px;}
+
+  /* ---- Family block ---- */
+  .fam-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:8px;}
+  @media(max-width:600px){.fam-grid{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:13.5px;font-weight:600;color:#3E3E3E;}
+  .field .hint{font-size:12.5px;color:#8A8A8A;font-weight:400;margin-top:-2px;}
+  input[type=number], input[type=text], select{
+    font-family:'Inter',sans-serif;font-size:15px;color:var(--ink);
+    padding:11px 13px;border-radius:var(--radius-sm);border:1px solid #DCD6C9;
+    background:var(--white);width:100%;
+  }
+  input[type=number]:focus, input[type=text]:focus, select:focus{
+    outline:none;border-color:var(--sage);box-shadow:0 0 0 3px rgba(157,183,158,.25);
+  }
+  input.computed{
+    background:var(--chrome);border-color:#E2E4E8;color:#333;font-weight:600;
+  }
+  .threshold-box{
+    margin-top:16px;background:var(--light-blue);border-radius:var(--radius-sm);
+    padding:14px 16px;font-size:14.5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  }
+  .threshold-box b{font-family:'Merriweather',serif;font-size:17px;}
+
+  /* ---- Person cards ---- */
+  #people{display:flex;flex-direction:column;gap:18px;margin-top:24px;}
+  .person-card{
+    border:1px solid #ECE7DD;border-radius:var(--radius);overflow:hidden;background:var(--white);
+  }
+  .person-head{
+    background:var(--soft-green);padding:14px 20px;font-family:'Merriweather',serif;font-weight:700;font-size:16px;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .person-head .p-total{font-family:'Inter',sans-serif;font-weight:700;font-size:15px;color:var(--sage-dark);}
+  .person-body{padding:6px 20px 18px;}
+  .row-block{border-top:1px solid #F0EDE4;padding:14px 0;}
+  .row-block:first-child{border-top:none;}
+  .row-head{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;}
+  .row-title{display:flex;align-items:center;gap:10px;}
+  .row-title .code{
+    font-family:'Merriweather',serif;font-weight:700;font-size:13px;color:var(--teal);
+    background:var(--light-blue);border-radius:6px;padding:2px 8px;
+  }
+  .row-title .label{font-weight:600;font-size:14.5px;}
+  .row-result{font-size:14px;color:#6B6B6B;}
+  .row-result b{color:var(--ink);}
+
+  /* switch */
+  .switch{position:relative;width:42px;height:24px;flex:0 0 auto;}
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .switch .track{
+    position:absolute;inset:0;background:#DCD6C9;border-radius:999px;transition:.15s;cursor:pointer;
+  }
+  .switch .track:before{
+    content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;
+    background:var(--white);border-radius:50%;transition:.15s;box-shadow:0 1px 3px rgba(0,0,0,.2);
+  }
+  .switch input:checked + .track{background:var(--sage);}
+  .switch input:checked + .track:before{transform:translateX(18px);}
+
+  .row-content{display:none;padding-top:14px;}
+  .row-content.open{display:block;}
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
+  .subnote{font-size:12.5px;color:#8B8B8B;margin-top:6px;}
+  .warn-note{
+    font-size:12.5px;color:#8A5A2E;background:#FBF1E4;border-radius:8px;padding:8px 10px;margin-top:8px;
+  }
+  .list-entry{
+    border:1px dashed #DCD6C9;border-radius:var(--radius-sm);padding:12px;margin-top:10px;
+  }
+  .list-entry + .list-entry{margin-top:10px;}
+  .list-entry-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .link-btn{
+    background:none;border:none;color:var(--teal);font-weight:600;font-size:13.5px;cursor:pointer;padding:0;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .remove-btn{background:none;border:none;color:#B5654A;font-size:13px;cursor:pointer;padding:0;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;font-size:13.5px;margin-top:8px;}
+  .checkbox-row input{width:16px;height:16px;}
+
+  /* ---- Steps nav (hero) ---- */
+  .steps-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
+  .step-chip{
+    display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid #ECE7DD;
+    border-radius:999px;padding:10px 18px 10px 10px;text-decoration:none;color:var(--ink);
+    font-size:14px;font-weight:600;transition:.15s;
+  }
+  .step-chip:hover{border-color:var(--sage);background:var(--soft-green);}
+  .step-chip .num{
+    width:24px;height:24px;border-radius:50%;background:var(--sage);color:#1E2A20;
+    display:flex;align-items:center;justify-content:center;font-family:'Merriweather',serif;font-weight:700;font-size:12.5px;flex:0 0 auto;
+  }
+
+  /* ---- Summary (compact collapsible bar) ---- */
+  .summary{
+    position:sticky;bottom:16px;margin-top:28px;z-index:20;
+    background:linear-gradient(160deg,var(--summary-bg),var(--summary-bg2));color:#F5F3EC;border-radius:var(--radius);
+    box-shadow:0 8px 30px rgba(47,60,58,.28);
+    overflow:hidden;
+  }
+  .summary-details{
+    max-height:0;opacity:0;overflow:hidden;
+    transition:max-height .25s ease, opacity .2s ease, padding .25s ease;
+    padding:0 22px;
+  }
+  .summary.expanded .summary-details{
+    max-height:420px;opacity:1;padding:18px 22px 4px;
+  }
+  .summary h3{color:#fff;font-size:16px;margin-bottom:12px;font-family:'Inter',sans-serif;font-weight:700;}
+  .sum-line{display:flex;justify-content:space-between;font-size:14px;padding:4px 0;color:#DCE6E4;}
+  .sum-line b{color:#fff;}
+  .verdict{
+    margin-top:10px;margin-bottom:16px;padding:12px 14px;border-radius:var(--radius-sm);font-size:13.5px;font-weight:500;
+  }
+  .verdict.pass{background:rgba(157,183,158,.22);color:#D9ECD9;}
+  .verdict.fail{background:rgba(216,184,146,.22);color:#F5E4CE;}
+
+  .summary-bar{
+    display:flex;align-items:center;gap:18px;padding:14px 20px;cursor:pointer;
+    user-select:none;flex-wrap:wrap;
+  }
+  .summary-bar .sb-stat{display:flex;flex-direction:column;line-height:1.2;}
+  .summary-bar .sb-stat .sb-label{font-size:11.5px;color:#B9C7C4;}
+  .summary-bar .sb-stat .sb-value{font-family:'Merriweather',serif;font-weight:700;font-size:17px;color:#fff;}
+  .summary-bar .sb-badge{
+    margin-left:auto;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:600;white-space:nowrap;
+  }
+  .summary-bar .sb-badge.pass{background:rgba(157,183,158,.28);color:#D9ECD9;}
+  .summary-bar .sb-badge.fail{background:rgba(216,184,146,.28);color:#F5E4CE;}
+  .summary-bar .sb-chevron{
+    width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.12);
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto;
+    transition:transform .2s ease;font-size:13px;
+  }
+  .summary.expanded .sb-chevron{transform:rotate(180deg);}
+  @media(max-width:560px){
+    .summary-bar{gap:10px;padding:12px 16px;}
+    .summary-bar .sb-badge{margin-left:0;order:3;flex-basis:100%;text-align:center;}
+  }
+  /* legacy (unused, kept for spacing consistency) */
+  .sum-total{display:none;}
+
+  /* ---- FAQ / notes ---- */
+  .notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:680px){.notes-grid{grid-template-columns:1fr;}}
+
+  /* ---- Video & Guide placeholder blocks ---- */
+  .meta-badge{
+    display:inline-block;background:var(--camel);color:#3A2A18;font-size:11.5px;font-weight:700;
+    padding:3px 10px;border-radius:999px;letter-spacing:.03em;margin-left:10px;vertical-align:middle;
+  }
+  .video-frame{
+    margin-top:18px;aspect-ratio:16/9;border-radius:var(--radius);
+    border:2px dashed #C9C4B8;background:var(--chrome);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#8A8A8A;
+  }
+  .video-frame .play-icon{
+    width:56px;height:56px;border-radius:50%;background:var(--white);border:1px solid #DCD6C9;
+    display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--sage-dark);
+  }
+  .video-frame span{font-size:13.5px;}
+  .guide-card{
+    display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  }
+  .guide-icon{
+    flex:0 0 auto;width:56px;height:56px;border-radius:14px;background:var(--soft-green);
+    display:flex;align-items:center;justify-content:center;font-size:24px;
+  }
+  .guide-text{flex:1 1 260px;}
+  .guide-text h3{font-size:18px;margin-bottom:4px;}
+  .guide-text p{margin:0;font-size:14px;color:#666;}
+  .guide-card .btn{flex:0 0 auto;}
+  .note-card{background:var(--white);border:1px solid #ECE7DD;border-radius:var(--radius-sm);padding:16px 18px;}
+  .note-card h4{font-size:14.5px;font-family:'Inter',sans-serif;font-weight:700;margin-bottom:6px;}
+  .note-card p{font-size:13.5px;color:#5A5A5A;margin:0;}
+
+  footer.site{background:#26302B;color:#D7D5C9;padding:36px 0 26px;margin-top:20px;}
+  footer.site .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;}
+  footer.site h4{color:#fff;font-family:'Inter',sans-serif;font-size:14px;margin-bottom:8px;}
+  footer.site a{color:#D7D5C9;text-decoration:none;font-size:13.5px;}
+  footer.site .cols{display:flex;gap:56px;flex-wrap:wrap;}
+  footer.site .fine{font-size:12px;color:#8C927D;margin-top:24px;max-width:820px;}
+
+  .sources{font-size:12.5px;color:#9A9284;margin-top:18px;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="site-bar">
+    <div class="logo">
+      <div class="logo-mark">NV</div>
+      <div>
+        <div class="logo-text">Voinova.tax</div>
+        <div class="logo-sub">Бухгалтерия в Чехии</div>
+      </div>
+    </div>
+    <a class="cta-ghost" href="https://voinova.tax/konsultacii" target="_blank" rel="noopener">Записаться на консультацию</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <span class="eyebrow">ПРОВЕРКА ДОХОДА ДЛЯ ZDP</span>
+    <h1>Калькулятор дохода для ZDP</h1>
+    <p class="lead">На этой странице вы разберётесь, хватает ли дохода вашей семьи для ZDP. Для этого здесь три инструмента: видео с разбором, подробный гид по доходам и калькулятор, который сам посчитает ваш доход по методике IPC (§ 6–§ 10 декларации DPFO, строка ř. 42).</p>
+    <div class="hero-note">
+      <span class="dot"></span>
+      <span>Официально сейчас действуют условия раунда <b>ZDP 2026</b>. Раунд ZDP 2027 пока не объявлен: IPC прямо указывает, что параметры следующих раундов могут измениться. Этот расчёт помогает заранее понять свою готовность, а не гарантирует результат будущего раунда.</span>
+    </div>
+    <div class="steps-row">
+      <a href="#video" class="step-chip"><span class="num">1</span> Видео</a>
+      <a href="#guide" class="step-chip"><span class="num">2</span> Гид</a>
+      <a href="#calc" class="step-chip"><span class="num">3</span> Калькулятор</a>
+    </div>
+  </div>
+</div>
+
+<section id="video">
+  <div class="wrap">
+    <div class="card">
+      <h3 style="margin-bottom:2px;">Доходы, учитываемые для ZDP<span class="meta-badge">~10 минут</span></h3>
+      <p class="section-sub" style="margin-bottom:0;">Видео от Натальи: какие доходы считаются, а какие нет, чтобы вы могли подготовиться перед подачей документов.</p>
+      <!-- TODO: когда видео будет готово, заменить .video-frame на embed с YouTube, например:
+           <div class="video-frame" style="border:none;padding:0;">
+             <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ВАШ_ID" title="Доходы, учитываемые для ZDP" frameborder="0" allowfullscreen style="border-radius:var(--radius);"></iframe>
+           </div>
+      -->
+      <div class="video-frame">
+        <div class="play-icon">▶</div>
+        <span>Видео появится здесь</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="guide">
+  <div class="wrap">
+    <div class="card guide-card">
+      <div class="guide-icon">📄</div>
+      <div class="guide-text">
+        <h3>Полный гид по доходам для ZDP<span class="meta-badge">Для тех, кто любит разобраться подробно</span></h3>
+        <p>Подробный разбор: какие доходы учитываются и какие нет, ссылки на законы и официальные разъяснения IPC и Finanční správy.</p>
+      </div>
+      <!-- TODO: когда документ будет готов, заменить href="#" на ссылку на файл/страницу -->
+      <a href="#" class="btn btn-ghost" id="guideDocLink">Открыть гид</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="notes-grid">
+      <div class="note-card">
+        <h4>Что мы считаем</h4>
+        <p>Все налогооблагаемые в Чехии доходы, которые формируют základ daně: зарплата, OSVČ, капитальные доходы, аренда, прочие доходы. Не только зарплата и бизнес.</p>
+      </div>
+      <div class="note-card">
+        <h4>Что мы не считаем</h4>
+        <p>Освобождённые от налога доходы: наследство, необлагаемые дары, освобождённая продажа имущества, сбережения на счёте, алименты, окончательно обложенные srážkovou daní выплаты.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="calc">
+  <div class="wrap">
+
+    <div class="card">
+      <div class="section-title">Калькулятор</div>
+      <div class="section-sub">Необходимый минимальный доход зависит от количества членов домохозяйства (domácnost), которые подают документы совместно. Обязательно считаются супруг(а) и дети до 18 лет. По желанию могут добавляться nezaopatřené дети 18–26 лет, родители 65+ и отдельные иждивенцы по правилам IPC. Незарегистрированный партнёр сам по себе не входит в domácnost для ZDP только из-за совместного проживания.</div>
+
+      <div class="fam-grid">
+        <div class="field">
+          <label for="adults">Взрослые участники заявки</label>
+          <input type="number" id="adults" min="1" value="1" step="1">
+          <span class="hint">Заявитель, супруг(а) и другие взрослые в заявке (на каждого будет своя карточка дохода)</span>
+        </div>
+        <div class="field">
+          <label for="children">Дети до 18 лет</label>
+          <input type="number" id="children" min="0" value="0" step="1">
+          <span class="hint">Без своего дохода, но увеличивают порог домохозяйства</span>
+        </div>
+      </div>
+
+      <div class="threshold-box">
+        <span>Минимальный доход домохозяйства по правилам 2026 (<span id="totalPeopleOut">1 человек</span>):</span>
+        <b id="thresholdOut">440 000 Kč</b>
+      </div>
+    </div>
+
+    <div id="people"></div>
+
+    <div class="summary" id="summaryBox">
+      <div class="summary-details">
+        <h3>Разбивка по участникам</h3>
+        <div id="personLines"></div>
+        <div class="verdict" id="verdictBox">Заполните доходы участников, расчёт обновится автоматически.</div>
+      </div>
+      <div class="summary-bar" id="summaryBar">
+        <div class="sb-stat">
+          <span class="sb-label">Доход семьи</span>
+          <span class="sb-value" id="familyIncomeOut">0 Kč</span>
+        </div>
+        <div class="sb-stat">
+          <span class="sb-label">Порог 2026</span>
+          <span class="sb-value" id="thresholdOut2">440 000 Kč</span>
+        </div>
+        <span class="sb-badge" id="sbBadge">заполните доходы</span>
+        <div class="sb-chevron">▲</div>
+      </div>
+    </div>
+
+    <div class="card" id="resultExplain" style="margin-top:24px;">
+      <h3 style="margin-bottom:10px;">Что означает этот расчёт</h3>
+      <p id="explainText" style="color:#4B4B4B;">Заполните данные выше, чтобы увидеть расчёт для вашей семьи.</p>
+      <p class="subnote" style="margin-top:14px;">Это ориентировочный расчёт по методике IPC (řádek 42 декларации DPFO), не официальное решение и не налоговая консультация в индивидуальном смысле. Раунд ZDP 2027 пока не объявлен: условия и суммы приведены по действующему раунду ZDP 2026 и могут измениться, если следующий раунд будет объявлен на других условиях. Условия ZDP: по официальному порталу МВД Чехии ipc.gov.cz. Налоговая механика и форма DPFO: по официальной Finanční správě ČR.</p>
+    </div>
+
+  </div>
+</section>
+
+
+<section>
+  <div class="wrap">
+    <div class="section-title" style="font-size:20px;">Частые вопросы: включается или нет</div>
+    <div class="notes-grid" style="margin-top:16px;">
+      <div class="note-card"><h4>Зарплата</h4><p>Да, если облагается в Чехии: берём налогооблагаемый доход из Potvrzení, не netto.</p></div>
+      <div class="note-card"><h4>OSVČ с paušálním výdajem</h4><p>Да, считаем базу после вычета расходов 80/60/40%, а не сам оборот.</p></div>
+      <div class="note-card"><h4>Paušální režim OSVČ</h4><p>Да, но отдельной фиксированной суммой по pásmo, не через доходы и расходы.</p></div>
+      <div class="note-card"><h4>Дивиденды</h4><p>Иногда: только если входят в чешскую DPFO. Окончательно обложенные srážkovou daní обычно не входят.</p></div>
+      <div class="note-card"><h4>Продажа недвижимости / ценных бумаг</h4><p>Иногда: только налоговая база после расходов, если продажа не освобождена.</p></div>
+      <div class="note-card"><h4>Наследство, сбережения, алименты</h4><p>Нет, эти суммы не входят в доход, учитываемый для ZDP.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h4>Voinova.tax</h4>
+        <p style="font-size:13.5px;">Бухгалтерские услуги для русскоязычных клиентов в Чехии</p>
+      </div>
+      <div>
+        <h4>Контакты</h4>
+        <p style="font-size:13.5px;"><a href="mailto:natalia@voinova.tax">natalia@voinova.tax</a><br><a href="tel:+420773630679">+420 773 630 679</a></p>
+      </div>
+      <div>
+        <h4>Сайт</h4>
+        <p style="font-size:13.5px;"><a href="https://voinova.tax" target="_blank" rel="noopener">voinova.tax</a></p>
+      </div>
+    </div>
+    <div class="fine">
+      Калькулятор (ориентировочный инструмент), не является официальным решением IPC/MV ČR и не заменяет налоговую консультацию. Условия и суммы приведены по раунду ZDP 2026 и могут измениться в следующих раундах, если они будут объявлены.
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ===================================================================
+  // КОНСТАНТЫ РАУНДА ZDP 2026 (обновить здесь при следующем раунде IPC)
+  // ===================================================================
+  const CONFIG = {
+    year: 2026,
+    familyBase: 440000,
+    familyStep: 110000,
+    pausal: {1: 224880, 2: 336600, 3: 514800},
+    expenseTypes: [
+      {id:'remeslo',   label:'Ремесленная živnost (80%)',            rate:0.80, cap:1600000},
+      {id:'zivnost',   label:'Обычная živnost (60%)',                rate:0.60, cap:1200000},
+      {id:'svobodne',  label:'Свободная профессия / иная деятельность (40%)', rate:0.40, cap:800000},
+    ],
+    najemRate: 0.30,
+    najemCap: 600000,
+    // Ориентировочные ставки для пересчёта netto <-> gross по зарплате (2026, employee side)
+    payroll: {
+      socialRate: 0.071,
+      healthRate: 0.045,
+      taxRateLow: 0.15,
+      taxRateHigh: 0.23,
+      taxBracketMonthly: 146901, // порог 23% в месяц, 2026
+      taxCreditMonthly: 2570,    // sleva na poplatníka, 2026
+    },
+  };
+  // ===================================================================
+
+  const fmt = (n) => (Math.round(n||0)).toLocaleString('ru-RU').replace(/,/g,' ') + ' Kč';
+  const num = (v) => { const n = parseFloat(String(v).replace(/\s/g,'').replace(',','.')); return isNaN(n) ? 0 : n; };
+  const uid = (() => { let i=0; return () => 'p'+(i++); })();
+
+  // ---- ориентировочный пересчёт зарплаты netto <-> gross (месячно, 2026) ----
+  function grossToNetMonthly(gross){
+    const pr = CONFIG.payroll;
+    const social = gross * pr.socialRate;
+    const health = gross * pr.healthRate;
+    const low = Math.min(gross, pr.taxBracketMonthly);
+    const high = Math.max(0, gross - pr.taxBracketMonthly);
+    const taxGross = low*pr.taxRateLow + high*pr.taxRateHigh;
+    const tax = Math.max(0, taxGross - pr.taxCreditMonthly);
+    return gross - social - health - tax;
+  }
+  function netToGrossMonthly(net){
+    if(net<=0) return 0;
+    let lo = 0, hi = Math.max(net*2, 200000);
+    for(let i=0;i<60;i++){
+      const mid = (lo+hi)/2;
+      if(grossToNetMonthly(mid) < net) lo = mid; else hi = mid;
+    }
+    return (lo+hi)/2;
+  }
+
+  function newPerson(){
+    return {
+      id: uid(),
+      s6: { on:false, employers:[{amountMonthly:0, months:12, mode:'gross'}] },
+      s7: { on:false, mode:'standard', pasmo:1, income:0, expenseType:'zivnost', expenseMode:'percent', actualExpenses:0 },
+      s8: { on:false, amount:0 },
+      s9: { on:false, income:0, expenseMode:'percent', actualExpenses:0 },
+      s10:{ on:false, entries:[{gross:0, expenses:0, exempt:false}] },
+    };
+  }
+
+  let state = { participants:1, children:0, people:[newPerson()] };
+
+  // ---------- calc ----------
+  function employerAnnualGross(e){
+    const monthly = num(e.amountMonthly);
+    const months = Math.min(12, Math.max(0, num(e.months) || 12));
+    const grossMonthly = e.mode === 'netto' ? netToGrossMonthly(monthly) : monthly;
+    return grossMonthly * months;
+  }
+  function calcS6(p){ return p.s6.on ? p.s6.employers.reduce((s,e)=>s+employerAnnualGross(e),0) : 0; }
+  function calcS7(p){
+    if(!p.s7.on) return 0;
+    if(p.s7.mode === 'pausalni') return CONFIG.pausal[p.s7.pasmo] || 0;
+    const income = num(p.s7.income);
+    let expenses;
+    if(p.s7.expenseMode === 'percent'){
+      const et = CONFIG.expenseTypes.find(t=>t.id===p.s7.expenseType) || CONFIG.expenseTypes[1];
+      expenses = Math.min(income*et.rate, et.cap);
+    } else {
+      expenses = num(p.s7.actualExpenses);
+    }
+    return income - expenses;
+  }
+  function calcS8(p){ return p.s8.on ? num(p.s8.amount) : 0; }
+  function calcS9(p){
+    if(!p.s9.on) return 0;
+    const income = num(p.s9.income);
+    let expenses;
+    if(p.s9.expenseMode === 'percent'){
+      expenses = Math.min(income*CONFIG.najemRate, CONFIG.najemCap);
+    } else {
+      expenses = num(p.s9.actualExpenses);
+    }
+    return income - expenses;
+  }
+  function calcS10(p){
+    if(!p.s10.on) return 0;
+    return p.s10.entries.reduce((s,e)=> e.exempt ? s : s + (num(e.gross)-num(e.expenses)), 0);
+  }
+  function personBase(p){
+    const s6 = calcS6(p), s7 = calcS7(p), s8 = calcS8(p), s9 = calcS9(p), s10 = calcS10(p);
+    const rest = s7+s8+s9+s10;
+    return { s6, s7, s8, s9, s10, rest, base: s6 + Math.max(0, rest) };
+  }
+  function threshold(n){ return n<=0 ? 0 : CONFIG.familyBase + CONFIG.familyStep*(n-1); }
+
+  // ---------- render ----------
+  const $ = (sel,root) => (root||document).querySelector(sel);
+  const peopleEl = $('#people');
+
+  function adultsCount(){
+    return Math.max(1, Math.round(num($('#adults').value)));
+  }
+  function childrenCount(){
+    return Math.max(0, Math.round(num($('#children').value)));
+  }
+
+  function syncPeopleCount(){
+    const need = adultsCount();
+    while(state.people.length < need) state.people.push(newPerson());
+    while(state.people.length > need) state.people.pop();
+  }
+
+  function expenseTypeOptions(selected){
+    return CONFIG.expenseTypes.map(t=>`<option value="${t.id}" ${t.id===selected?'selected':''}>${t.label}</option>`).join('');
+  }
+
+  function renderPeople(){
+    syncPeopleCount();
+    peopleEl.innerHTML = state.people.map((p, idx) => personCardHtml(p, idx)).join('');
+    state.people.forEach((p, idx) => bindPersonEvents(p, idx));
+    updateAll();
+  }
+
+  function personCardHtml(p, idx){
+    return `
+    <div class="person-card" data-idx="${idx}">
+      <div class="person-head">
+        <span>Участник ${idx+1}${idx===0?' (заявитель)':''}</span>
+        <span class="p-total" id="ptotal-${p.id}">0 Kč</span>
+      </div>
+      <div class="person-body">
+
+        ${rowBlock(p, 'p-s6-'+p.id, '§6', 'Zaměstnání (работа по найму)', s6Html(p))}
+        ${rowBlock(p, 'p-s7-'+p.id, '§7', 'OSVČ / самостоятельная деятельность', s7Html(p))}
+        ${rowBlock(p, 'p-s8-'+p.id, '§8', 'Kapitál (капитальные доходы)', s8Html(p))}
+        ${rowBlock(p, 'p-s9-'+p.id, '§9', 'Nájem (доход от аренды)', s9Html(p))}
+        ${rowBlock(p, 'p-s10-'+p.id, '§10', 'Ostatní (прочие доходы)', s10Html(p))}
+
+      </div>
+    </div>`;
+  }
+
+  function rowBlock(p, key, code, label, innerHtml){
+    const onKey = key.split('-')[1]; // s6/s7/s8/s9/s10
+    const isOn = p[onKey].on;
+    return `
+    <div class="row-block" data-rowkey="${onKey}" data-pid="${p.id}">
+      <div class="row-head">
+        <div class="row-title"><span class="code">${code}</span><span class="label">${label}</span></div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <span class="row-result" data-result="${onKey}"></span>
+          <label class="switch">
+            <input type="checkbox" data-toggle="${onKey}" ${isOn?'checked':''}>
+            <span class="track"></span>
+          </label>
+        </div>
+      </div>
+      <div class="row-content ${isOn?'open':''}" data-content="${onKey}">
+        ${innerHtml}
+      </div>
+    </div>`;
+  }
+
+  function s6Html(p){
+    const rows = p.s6.employers.map((e,i)=>`
+      <div class="list-entry" data-emp-entry="${i}">
+        <div class="list-entry-head">
+          <b style="font-size:13.5px;">Работодатель ${i+1}</b>
+          ${p.s6.employers.length>1?`<button class="remove-btn" data-s6-remove="${i}">убрать</button>`:''}
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Сумма в месяц</label>
+            <input type="number" min="0" data-s6-emp-amount="${i}" value="${e.amountMonthly||0}">
+          </div>
+          <div class="field">
+            <label>Это сумма</label>
+            <select data-s6-emp-mode="${i}">
+              <option value="gross" ${e.mode==='gross'?'selected':''}>До налогов (gross, из трудового договора)</option>
+              <option value="netto" ${e.mode==='netto'?'selected':''}>Netto (чистыми на счёт)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-top:10px;">
+          <label>Сколько месяцев в году работал(а) на этом месте</label>
+          <input type="number" min="1" max="12" data-s6-emp-months="${i}" value="${e.months||12}">
+        </div>
+        <div class="subnote" data-s6-emp-helper="${i}"></div>
+      </div>`).join('');
+    return `${rows}
+      <button class="link-btn" data-s6-add style="margin-top:10px;">+ добавить ещё одного работодателя</button>
+      <div class="subnote" style="margin-top:8px;">Точнее всего сумма «до налогов» из трудового договора или Potvrzení: она войдёт в расчёт напрямую. Если знаете только сумму, которая приходит на счёт (netto), выберите этот вариант, и мы приблизительно пересчитаем её в gross по ставкам 2026 года (соцстрах 7,1%, медстрах 4,5%, налог 15%/23%, sleva na poplatníka). Это ориентировочно и не учитывает личные льготы (на детей и т.п.): для точной цифры сверьтесь с výplatní páskou.</div>`;
+  }
+
+  function s7Html(p){
+    return `
+    <div class="field">
+      <label>Режим</label>
+      <select data-s7-mode>
+        <option value="standard" ${p.s7.mode==='standard'?'selected':''}>Обычный режим (доходы минус расходы)</option>
+        <option value="pausalni" ${p.s7.mode==='pausalni'?'selected':''}>Paušální režim (фиксированная сумма IPC)</option>
+      </select>
+    </div>
+    ${p.s7.mode==='pausalni' ? `
+      <div class="field" style="margin-top:12px;">
+        <label>Pásmo paušální daně</label>
+        <select data-s7-pasmo>
+          <option value="1" ${p.s7.pasmo==1?'selected':''}>I pásmo (224 880 Kč)</option>
+          <option value="2" ${p.s7.pasmo==2?'selected':''}>II pásmo (336 600 Kč)</option>
+          <option value="3" ${p.s7.pasmo==3?'selected':''}>III pásmo (514 800 Kč)</option>
+        </select>
+        <span class="warn-note" style="display:block;">Paušální režim считается не по формуле «доходы минус расходы», а IPC берёт фиксированную сумму по выбранному pásmo, независимо от фактического дохода. Если позже вернётесь к обычному режиму, введённые доходы и расходы сохранятся.</span>
+      </div>
+    ` : `
+      <div class="field-grid" style="margin-top:12px;">
+        <div class="field">
+          <label>Доходы от предпринимательства за год</label>
+          <input type="number" min="0" data-s7-income value="${p.s7.income||0}">
+        </div>
+        <div class="field">
+          <label>Как считать расходы</label>
+          <select data-s7-expmode>
+            <option value="percent" ${p.s7.expenseMode==='percent'?'selected':''}>Стандартный вычет (% по типу деятельности)</option>
+            <option value="actual" ${p.s7.expenseMode==='actual'?'selected':''}>Знаю точную сумму расходов</option>
+          </select>
+        </div>
+      </div>
+      ${p.s7.expenseMode==='percent' ? `
+        <div class="field" style="margin-top:12px;">
+          <label>Тип деятельности</label>
+          <select data-s7-exptype>${expenseTypeOptions(p.s7.expenseType)}</select>
+        </div>
+      ` : `
+        <div class="field" style="margin-top:12px;">
+          <label>Фактические расходы за год</label>
+          <input type="number" min="0" data-s7-actual value="${p.s7.actualExpenses||0}">
+        </div>
+      `}
+    `}
+    <div class="row-result" style="margin-top:10px;">Налоговая база § 7 (ř. 37): <b data-s7-out>0 Kč</b></div>`;
+  }
+
+  function s8Html(p){
+    return `
+    <div class="warn-note">Капитальные доходы (§8): например, проценты по займам, отдельные доходы от капитала и иностранные дивиденды, если они входят в чешскую DPFO. Не включайте доход, окончательно обложенный srážkovou daní и не входящий в DPFO (например, часть банковских процентов), и любые доходы, освобождённые от налога.</div>
+    <div class="field" style="margin-top:12px;">
+      <label>Сумма капитальных доходов, входящая в чешскую декларацию</label>
+      <input type="number" min="0" data-s8-amount value="${p.s8.amount||0}">
+    </div>`;
+  }
+
+  function s9Html(p){
+    return `
+    <div class="field-grid">
+      <div class="field">
+        <label>Доход от аренды за год</label>
+        <input type="number" min="0" data-s9-income value="${p.s9.income||0}">
+      </div>
+      <div class="field">
+        <label>Как считать расходы</label>
+        <select data-s9-expmode>
+          <option value="percent" ${p.s9.expenseMode==='percent'?'selected':''}>30% paušál (авто)</option>
+          <option value="actual" ${p.s9.expenseMode==='actual'?'selected':''}>Знаю точную сумму расходов</option>
+        </select>
+      </div>
+    </div>
+    ${p.s9.expenseMode==='actual' ? `
+      <div class="field" style="margin-top:12px;">
+        <label>Фактические расходы за год</label>
+        <input type="number" min="0" data-s9-actual value="${p.s9.actualExpenses||0}">
+      </div>
+    `:''}
+    <div class="row-result" style="margin-top:10px;">Налоговая база § 9 (ř. 39): <b data-s9-out>0 Kč</b></div>`;
+  }
+
+  function s10Html(p){
+    const rows = p.s10.entries.map((e,i)=>`
+      <div class="list-entry">
+        <div class="list-entry-head">
+          <b style="font-size:13.5px;">Доход ${i+1}</b>
+          ${p.s10.entries.length>1?`<button class="remove-btn" data-s10-remove="${i}">убрать</button>`:''}
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Сумма поступления</label>
+            <input type="number" min="0" data-s10-gross="${i}" value="${e.gross||0}" ${e.exempt?'disabled':''}>
+          </div>
+          <div class="field">
+            <label>Допустимые расходы (цена приобретения и т.п.)</label>
+            <input type="number" min="0" data-s10-expenses="${i}" value="${e.expenses||0}" ${e.exempt?'disabled':''}>
+          </div>
+        </div>
+        <label class="checkbox-row">
+          <input type="checkbox" data-s10-exempt="${i}" ${e.exempt?'checked':''}>
+          Этот доход освобождён от налога (не входит в расчёт)
+        </label>
+      </div>`).join('');
+    return `${rows}
+      <button class="link-btn" data-s10-add style="margin-top:10px;">+ добавить ещё один доход</button>
+      <div class="subnote">Продажа имущества, дар и т.п. не означают, что вся сумма считается доходом ZDP: учитываем только неосвобождённую налоговую базу.</div>
+      <div class="row-result" style="margin-top:10px;">Налоговая база § 10 (ř. 40): <b data-s10-out>0 Kč</b></div>`;
+  }
+
+  // ---------- events ----------
+  function bindPersonEvents(p, idx){
+    const card = peopleEl.querySelector(`.person-card[data-idx="${idx}"]`);
+    if(!card) return;
+
+    // toggles
+    card.querySelectorAll('[data-toggle]').forEach(sw=>{
+      sw.addEventListener('change', ()=>{
+        const key = sw.getAttribute('data-toggle');
+        p[key].on = sw.checked;
+        const content = card.querySelector(`[data-content="${key}"]`);
+        content.classList.toggle('open', sw.checked);
+        updateAll();
+      });
+    });
+
+    // §6
+    card.querySelectorAll('[data-s6-emp-amount]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const i = +inp.getAttribute('data-s6-emp-amount');
+        p.s6.employers[i].amountMonthly = num(inp.value);
+        updateAll();
+      });
+    });
+    card.querySelectorAll('[data-s6-emp-months]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const i = +inp.getAttribute('data-s6-emp-months');
+        p.s6.employers[i].months = num(inp.value);
+        updateAll();
+      });
+    });
+    card.querySelectorAll('[data-s6-emp-mode]').forEach(sel=>{
+      sel.addEventListener('change', ()=>{
+        const i = +sel.getAttribute('data-s6-emp-mode');
+        p.s6.employers[i].mode = sel.value;
+        updateAll();
+      });
+    });
+    const s6add = card.querySelector('[data-s6-add]');
+    if(s6add) s6add.addEventListener('click', ()=>{ p.s6.employers.push({amountMonthly:0, months:12, mode:'gross'}); rerenderPerson(p, idx); });
+    card.querySelectorAll('[data-s6-remove]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = +btn.getAttribute('data-s6-remove');
+        p.s6.employers.splice(i,1);
+        rerenderPerson(p, idx);
+      });
+    });
+
+    // §7
+    bindSel(card,'[data-s7-mode]', v=>{ p.s7.mode=v; rerenderPerson(p, idx); });
+    bindSel(card,'[data-s7-pasmo]', v=>{ p.s7.pasmo=+v; updateAll(); });
+    bindNum(card,'[data-s7-income]', v=>{ p.s7.income=v; updateAll(); });
+    bindSel(card,'[data-s7-expmode]', v=>{ p.s7.expenseMode=v; rerenderPerson(p, idx); });
+    bindSel(card,'[data-s7-exptype]', v=>{ p.s7.expenseType=v; updateAll(); });
+    bindNum(card,'[data-s7-actual]', v=>{ p.s7.actualExpenses=v; updateAll(); });
+
+    // §8
+    bindNum(card,'[data-s8-amount]', v=>{ p.s8.amount=v; updateAll(); });
+
+    // §9
+    bindNum(card,'[data-s9-income]', v=>{ p.s9.income=v; updateAll(); });
+    bindSel(card,'[data-s9-expmode]', v=>{ p.s9.expenseMode=v; rerenderPerson(p, idx); });
+    bindNum(card,'[data-s9-actual]', v=>{ p.s9.actualExpenses=v; updateAll(); });
+
+    // §10
+    card.querySelectorAll('[data-s10-gross]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{ p.s10.entries[+inp.getAttribute('data-s10-gross')].gross = num(inp.value); updateAll(); });
+    });
+    card.querySelectorAll('[data-s10-expenses]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{ p.s10.entries[+inp.getAttribute('data-s10-expenses')].expenses = num(inp.value); updateAll(); });
+    });
+    card.querySelectorAll('[data-s10-exempt]').forEach(inp=>{
+      inp.addEventListener('change', ()=>{ p.s10.entries[+inp.getAttribute('data-s10-exempt')].exempt = inp.checked; rerenderPerson(p, idx); });
+    });
+    const s10add = card.querySelector('[data-s10-add]');
+    if(s10add) s10add.addEventListener('click', ()=>{ p.s10.entries.push({gross:0,expenses:0,exempt:false}); rerenderPerson(p, idx); });
+    card.querySelectorAll('[data-s10-remove]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = +btn.getAttribute('data-s10-remove');
+        p.s10.entries.splice(i,1);
+        rerenderPerson(p, idx);
+      });
+    });
+  }
+
+  function bindNum(root, sel, cb){ const el = root.querySelector(sel); if(el) el.addEventListener('input', ()=>cb(num(el.value))); }
+  function bindSel(root, sel, cb){ const el = root.querySelector(sel); if(el) el.addEventListener('change', ()=>cb(el.value)); }
+
+  function rerenderPerson(p, idx){
+    const card = peopleEl.querySelector(`.person-card[data-idx="${idx}"]`);
+    card.outerHTML = personCardHtml(p, idx);
+    bindPersonEvents(p, idx);
+    updateAll();
+  }
+
+  // ---------- update computed numbers (no full rerender, keeps focus) ----------
+  function updateAll(){
+    const n = adultsCount() + childrenCount();
+    const th = threshold(n);
+    $('#thresholdOut').textContent = fmt(th);
+    $('#thresholdOut2').textContent = fmt(th);
+    const mod10 = n%10, mod100 = n%100;
+    let peopleWord = 'человек';
+    if(mod10===1 && mod100!==11) peopleWord = 'человек';
+    else if([2,3,4].includes(mod10) && ![12,13,14].includes(mod100)) peopleWord = 'человека';
+    $('#totalPeopleOut').textContent = `${n} ${peopleWord}`;
+
+    // §6 helper texts (netto <-> gross)
+    state.people.forEach((p, idx) => {
+      const card = peopleEl.querySelector(`.person-card[data-idx="${idx}"]`);
+      if(!card) return;
+      p.s6.employers.forEach((e,i)=>{
+        const helper = card.querySelector(`[data-s6-emp-helper="${i}"]`);
+        if(!helper) return;
+        const monthly = num(e.amountMonthly);
+        if(!monthly){ helper.textContent = ''; return; }
+        if(e.mode === 'gross'){
+          const net = grossToNetMonthly(monthly);
+          helper.textContent = `≈ на счёт (netto) в месяц: ${fmt(net)}`;
+        } else {
+          const gross = netToGrossMonthly(monthly);
+          helper.textContent = `≈ до налогов (gross) в месяц: ${fmt(gross)} (учитывается в расчёте)`;
+        }
+      });
+    });
+
+    let familyIncome = 0;
+    const lines = [];
+
+    state.people.forEach((p, idx) => {
+      const r = personBase(p);
+      familyIncome += r.base;
+
+      const card = peopleEl.querySelector(`.person-card[data-idx="${idx}"]`);
+      if(card){
+        const ptotal = card.querySelector(`#ptotal-${p.id}`);
+        if(ptotal) ptotal.textContent = fmt(r.base);
+
+        setResult(card,'s6', r.s6);
+        setResult(card,'s7', r.s7);
+        setResult(card,'s8', r.s8);
+        setResult(card,'s9', r.s9);
+        setResult(card,'s10', r.s10);
+
+        const s7out = card.querySelector('[data-s7-out]'); if(s7out) s7out.textContent = fmt(r.s7);
+        const s9out = card.querySelector('[data-s9-out]'); if(s9out) s9out.textContent = fmt(r.s9);
+        const s10out = card.querySelector('[data-s10-out]'); if(s10out) s10out.textContent = fmt(r.s10);
+      }
+
+      lines.push(`<div class="sum-line"><span>Участник ${idx+1} (база ř. 42)</span><b>${fmt(r.base)}</b></div>`);
+    });
+
+    $('#personLines').innerHTML = lines.join('');
+    $('#familyIncomeOut').textContent = fmt(familyIncome);
+
+    const diff = familyIncome - th;
+    const box = $('#verdictBox');
+    const badge = $('#sbBadge');
+
+    // Большой итоговый блок в конце страницы
+    const explain = $('#explainText');
+    if(familyIncome === 0){
+      explain.textContent = 'Заполните доходы участников выше, чтобы увидеть расчёт для вашей семьи.';
+    } else {
+      const kidsPart = childrenCount()>0 ? ` (включая ${childrenCount()} ${childrenCount()===1?'ребёнка':'детей'})` : '';
+      let verdictPart;
+      if(diff >= 0){
+        verdictPart = `Это выше порога на ${fmt(diff)}: доход предварительно проходит по критерию ekonomické nezávislosti.`;
+      } else {
+        verdictPart = `До порога пока не хватает ${fmt(Math.abs(diff))}.`;
+      }
+      explain.textContent = `Для семьи из ${n} человек${kidsPart} минимальный доход по условиям ZDP 2026 составляет ${fmt(th)}. По введённым данным учитываемый доход семьи (ориентир ř. 42) составляет ${fmt(familyIncome)}. ${verdictPart} Остальные условия ZDP (Dočasná ochrana, Zdravotní pojištění, Trestní zachovalost и другие) в этот расчёт не входят и проверяются отдельно.`;
+    }
+
+    if(familyIncome === 0){
+      badge.className = 'sb-badge';
+      badge.textContent = 'заполните доходы';
+    } else if(diff >= 0){
+      badge.className = 'sb-badge pass';
+      badge.textContent = `запас +${fmt(diff)}`;
+    } else {
+      badge.className = 'sb-badge fail';
+      badge.textContent = `не хватает ${fmt(Math.abs(diff))}`;
+    }
+    if(diff >= 0){
+      box.className = 'verdict pass';
+      box.textContent = `Предварительно доход проходит по критерию ekonomické nezávislosti: запас +${fmt(diff)}. Остальные условия ZDP (Dočasná ochrana, Zdravotní pojištění, Trestní zachovalost и другие) нужно проверить отдельно.`;
+    } else {
+      box.className = 'verdict fail';
+      box.textContent = `По указанным цифрам пока не хватает ${fmt(Math.abs(diff))} до порога. Это не приговор: доход можно проверить точнее вместе с бухгалтером, учитывая все источники и документы.`;
+    }
+  }
+
+  function setResult(card, key, value){
+    const el = card.querySelector(`[data-result="${key}"]`);
+    if(el) el.textContent = value ? fmt(value) : '';
+  }
+
+  // ---------- init ----------
+  $('#adults').addEventListener('input', renderPeople);
+  $('#children').addEventListener('input', updateAll);
+  $('#summaryBar').addEventListener('click', ()=>{
+    $('#summaryBox').classList.toggle('expanded');
+  });
+
+  renderPeople();
+})();
+</script>
+</body>
+</html>
