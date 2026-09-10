@@ -187,8 +187,8 @@
 
   /* ---- Exempt income link (inside §10) ---- */
   .exempt-link-btn{
-    background:none;border:none;padding:0;font:inherit;font-weight:700;color:#8A5A2E;
-    text-decoration:underline;cursor:pointer;
+    display:inline;background:none;border:none;padding:0;margin:0;font:inherit;font-weight:700;
+    color:#8A5A2E;text-decoration:underline;text-align:left;cursor:pointer;
   }
 
   /* ---- Exempt income modal ---- */
@@ -514,6 +514,26 @@
 
   const fmt = (n) => (Math.round(n||0)).toLocaleString('ru-RU').replace(/,/g,' ') + ' Kč';
   const num = (v) => { const n = parseFloat(String(v).replace(/\s/g,'').replace(',','.')); return isNaN(n) ? 0 : n; };
+  const groupDigits = (digits) => digits.length > 4 ? Number(digits).toLocaleString('ru-RU').replace(/,/g,' ') : digits;
+  const fmtInput = (v) => { const n = num(v); return n ? groupDigits(String(Math.round(n))) : '0'; };
+
+  // Живое форматирование денежных полей: пока печатаешь, само расставляет пробелы-разделители тысяч
+  // (начиная с 5 цифр: 1000 остаётся без пробела, а 10000 уже становится «10 000»)
+  function reformatLive(el){
+    const oldValue = el.value;
+    const oldPos = el.selectionStart == null ? oldValue.length : el.selectionStart;
+    const digitsBeforeCursor = oldValue.slice(0, oldPos).replace(/[^\d]/g,'').length;
+    const digits = oldValue.replace(/[^\d]/g,'').replace(/^0+(?=\d)/,'');
+    const formatted = groupDigits(digits);
+    el.value = formatted;
+    if(digitsBeforeCursor === 0){ el.setSelectionRange(0,0); return; }
+    let count = 0, newPos = formatted.length;
+    for(let i=0;i<formatted.length;i++){
+      if(/\d/.test(formatted[i])) count++;
+      if(count === digitsBeforeCursor){ newPos = i+1; break; }
+    }
+    el.setSelectionRange(newPos, newPos);
+  }
   const uid = (() => { let i=0; return () => 'p'+(i++); })();
 
   // ---- ориентировочный пересчёт зарплаты netto <-> gross (месячно, 2026) ----
@@ -674,7 +694,7 @@
         <div class="field-grid">
           <div class="field">
             <label>Сумма в месяц</label>
-            <input type="text" inputmode="decimal" data-s6-emp-amount="${i}" value="${e.amountMonthly||0}">
+            <input type="text" inputmode="decimal" data-s6-emp-amount="${i}" value="${fmtInput(e.amountMonthly)}">
           </div>
           <div class="field">
             <label>Это сумма</label>
@@ -706,7 +726,7 @@
         <div class="field-grid">
           <div class="field">
             <label>Доходы от этой деятельности за год</label>
-            <input type="text" inputmode="decimal" data-s7-act-income="${i}" value="${a.income||0}">
+            <input type="text" inputmode="decimal" data-s7-act-income="${i}" value="${fmtInput(a.income)}">
           </div>
           <div class="field">
             <label>Как считать расходы</label>
@@ -724,7 +744,7 @@
         ` : `
           <div class="field" style="margin-top:10px;">
             <label>Фактические расходы за год</label>
-            <input type="text" inputmode="decimal" data-s7-act-actual="${i}" value="${a.actualExpenses||0}">
+            <input type="text" inputmode="decimal" data-s7-act-actual="${i}" value="${fmtInput(a.actualExpenses)}">
           </div>
         `}
       </div>`).join('');
@@ -762,7 +782,7 @@
     <div class="warn-note" style="margin-top:0;">Указывайте только те капитальные доходы, которые нужно включать в чешскую налоговую декларацию. Доходы, с которых налог уже окончательно удержан у источника в Чехии (srážková daň), повторно в декларацию не вносятся.</div>
     <div class="field" style="margin-top:12px;">
       <label>Сумма капитальных доходов, входящая в чешскую декларацию</label>
-      <input type="text" inputmode="decimal" data-s8-amount value="${p.s8.amount||0}">
+      <input type="text" inputmode="decimal" data-s8-amount value="${fmtInput(p.s8.amount)}">
     </div>`;
   }
 
@@ -771,7 +791,7 @@
     <div class="field-grid">
       <div class="field">
         <label>Доход от аренды за год</label>
-        <input type="text" inputmode="decimal" data-s9-income value="${p.s9.income||0}">
+        <input type="text" inputmode="decimal" data-s9-income value="${fmtInput(p.s9.income)}">
       </div>
       <div class="field">
         <label>Как считать расходы</label>
@@ -784,7 +804,7 @@
     ${p.s9.expenseMode==='actual' ? `
       <div class="field" style="margin-top:12px;">
         <label>Фактические расходы за год</label>
-        <input type="text" inputmode="decimal" data-s9-actual value="${p.s9.actualExpenses||0}">
+        <input type="text" inputmode="decimal" data-s9-actual value="${fmtInput(p.s9.actualExpenses)}">
       </div>
     `:''}
     <div class="row-result" style="margin-top:10px;">Налоговая база § 9 (ř. 39): <b data-s9-out>0 Kč</b></div>`;
@@ -800,11 +820,11 @@
         <div class="field-grid">
           <div class="field">
             <label>Сумма поступления</label>
-            <input type="text" inputmode="decimal" data-s10-gross="${i}" value="${e.gross||0}" ${e.exempt?'disabled':''}>
+            <input type="text" inputmode="decimal" data-s10-gross="${i}" value="${fmtInput(e.gross)}" ${e.exempt?'disabled':''}>
           </div>
           <div class="field">
             <label>Допустимые расходы (цена приобретения и т.п.)</label>
-            <input type="text" inputmode="decimal" data-s10-expenses="${i}" value="${e.expenses||0}" ${e.exempt?'disabled':''}>
+            <input type="text" inputmode="decimal" data-s10-expenses="${i}" value="${fmtInput(e.expenses)}" ${e.exempt?'disabled':''}>
           </div>
         </div>
         <label class="checkbox-row">
@@ -839,6 +859,7 @@
     // §6
     card.querySelectorAll('[data-s6-emp-amount]').forEach(inp=>{
       inp.addEventListener('input', ()=>{
+        reformatLive(inp);
         const i = +inp.getAttribute('data-s6-emp-amount');
         p.s6.employers[i].amountMonthly = num(inp.value);
         updateAll();
@@ -872,7 +893,7 @@
     bindSel(card,'[data-s7-mode]', v=>{ p.s7.mode=v; rerenderPerson(p, idx); });
     bindSel(card,'[data-s7-pasmo]', v=>{ p.s7.pasmo=+v; updateAll(); });
     card.querySelectorAll('[data-s7-act-income]').forEach(inp=>{
-      inp.addEventListener('input', ()=>{ p.s7.activities[+inp.getAttribute('data-s7-act-income')].income = num(inp.value); updateAll(); });
+      inp.addEventListener('input', ()=>{ reformatLive(inp); p.s7.activities[+inp.getAttribute('data-s7-act-income')].income = num(inp.value); updateAll(); });
     });
     card.querySelectorAll('[data-s7-act-expmode]').forEach(sel=>{
       sel.addEventListener('change', ()=>{ p.s7.activities[+sel.getAttribute('data-s7-act-expmode')].expenseMode = sel.value; rerenderPerson(p, idx); });
@@ -881,7 +902,7 @@
       sel.addEventListener('change', ()=>{ p.s7.activities[+sel.getAttribute('data-s7-act-exptype')].expenseType = sel.value; updateAll(); });
     });
     card.querySelectorAll('[data-s7-act-actual]').forEach(inp=>{
-      inp.addEventListener('input', ()=>{ p.s7.activities[+inp.getAttribute('data-s7-act-actual')].actualExpenses = num(inp.value); updateAll(); });
+      inp.addEventListener('input', ()=>{ reformatLive(inp); p.s7.activities[+inp.getAttribute('data-s7-act-actual')].actualExpenses = num(inp.value); updateAll(); });
     });
     const s7actAdd = card.querySelector('[data-s7-act-add]');
     if(s7actAdd) s7actAdd.addEventListener('click', ()=>{ p.s7.activities.push({income:0, expenseType:'zivnost', expenseMode:'percent', actualExpenses:0}); rerenderPerson(p, idx); });
@@ -903,10 +924,10 @@
 
     // §10
     card.querySelectorAll('[data-s10-gross]').forEach(inp=>{
-      inp.addEventListener('input', ()=>{ p.s10.entries[+inp.getAttribute('data-s10-gross')].gross = num(inp.value); updateAll(); });
+      inp.addEventListener('input', ()=>{ reformatLive(inp); p.s10.entries[+inp.getAttribute('data-s10-gross')].gross = num(inp.value); updateAll(); });
     });
     card.querySelectorAll('[data-s10-expenses]').forEach(inp=>{
-      inp.addEventListener('input', ()=>{ p.s10.entries[+inp.getAttribute('data-s10-expenses')].expenses = num(inp.value); updateAll(); });
+      inp.addEventListener('input', ()=>{ reformatLive(inp); p.s10.entries[+inp.getAttribute('data-s10-expenses')].expenses = num(inp.value); updateAll(); });
     });
     card.querySelectorAll('[data-s10-exempt]').forEach(inp=>{
       inp.addEventListener('change', ()=>{ p.s10.entries[+inp.getAttribute('data-s10-exempt')].exempt = inp.checked; rerenderPerson(p, idx); });
@@ -922,7 +943,7 @@
     });
   }
 
-  function bindNum(root, sel, cb){ const el = root.querySelector(sel); if(el) el.addEventListener('input', ()=>cb(num(el.value))); }
+  function bindNum(root, sel, cb){ const el = root.querySelector(sel); if(el) el.addEventListener('input', ()=>{ reformatLive(el); cb(num(el.value)); }); }
   function bindSel(root, sel, cb){ const el = root.querySelector(sel); if(el) el.addEventListener('change', ()=>cb(el.value)); }
 
   function rerenderPerson(p, idx){
