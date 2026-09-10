@@ -87,7 +87,7 @@
     padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:18px;
   }
   .hero h1{font-size:36px;max-width:680px;}
-  .hero .lead{font-size:17px;max-width:640px;color:#4B4B4B;}
+  .hero .lead, .lead{font-size:17px;max-width:640px;color:#4B4B4B;}
   .hero-note{
     margin-top:22px;background:var(--white);border:1px solid #ECE7DD;
     border-radius:var(--radius);padding:16px 20px;font-size:14px;color:#555;
@@ -180,6 +180,50 @@
   .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   @media(max-width:560px){.field-grid{grid-template-columns:1fr;}}
   .subnote{font-size:12.5px;color:#8B8B8B;margin-top:6px;}
+  .row-intro{
+    font-size:13.5px;color:#5A5A5A;background:var(--chrome);border-radius:10px;
+    padding:10px 14px;margin-bottom:14px;line-height:1.5;
+  }
+
+  /* ---- Exempt income link (inside §10) ---- */
+  .exempt-link-btn{
+    background:none;border:none;padding:0;font:inherit;font-weight:700;color:#8A5A2E;
+    text-decoration:underline;cursor:pointer;
+  }
+
+  /* ---- Exempt income modal ---- */
+  .modal-overlay{
+    display:none;position:fixed;inset:0;background:rgba(35,43,37,.55);z-index:50;
+    align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-box{
+    background:var(--white);border-radius:20px;max-width:760px;width:100%;
+    box-shadow:0 24px 60px rgba(0,0,0,.3);position:relative;
+  }
+  .modal-head{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+    padding:24px 26px 16px;border-bottom:1px solid #ECE7DD;background:var(--white);
+    border-radius:20px 20px 0 0;
+  }
+  .modal-head h3{font-size:19px;max-width:600px;}
+  .modal-close{
+    background:var(--chrome);border:none;border-radius:50%;width:32px;height:32px;flex:0 0 auto;
+    font-size:16px;cursor:pointer;color:#5A5A5A;line-height:1;
+  }
+  .modal-close:hover{background:#E2E4E8;}
+  .exempt-inner{padding:20px 26px 26px;}
+  .exempt-inner > p{font-size:14px;color:#4B4B4B;margin-bottom:14px;}
+  .exempt-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:680px){.exempt-grid{grid-template-columns:1fr;}}
+  .exempt-item{background:var(--chrome);border:1px solid #ECE7DD;border-radius:12px;padding:12px 14px;}
+  .exempt-item b{display:block;font-size:13.5px;margin-bottom:4px;color:#2E362F;}
+  .exempt-item span{font-size:13px;color:#6B6B6B;line-height:1.5;}
+  .exempt-caution{
+    margin-top:16px;font-size:13px;color:#8A5A2E;background:#FBF1E4;border-radius:10px;padding:12px 14px;line-height:1.55;
+  }
+  .exempt-sources{margin-top:16px;font-size:12.5px;color:#8A8A8A;line-height:1.6;}
+  .exempt-sources a{color:var(--teal);}
   .warn-note{
     font-size:12.5px;color:#8A5A2E;background:#FBF1E4;border-radius:8px;padding:8px 10px;margin-top:8px;
   }
@@ -313,76 +357,23 @@
         <div class="logo-sub">Бухгалтерия в Чехии</div>
       </div>
     </div>
-    <a class="cta-ghost" href="https://voinova.tax/konsultacii" target="_blank" rel="noopener">Записаться на консультацию</a>
+    <a class="cta-ghost" href="https://voinova.tax" target="_blank" rel="noopener">Мои услуги</a>
   </div>
 </header>
 
-<div class="hero">
-  <div class="wrap">
-    <span class="eyebrow">ПРОВЕРКА ДОХОДА ДЛЯ ZDP</span>
-    <h1>Калькулятор дохода для ZDP</h1>
-    <p class="lead">На этой странице вы разберётесь, хватает ли дохода вашей семьи для ZDP. Для этого здесь три инструмента: видео с разбором, подробный гид по доходам и калькулятор, который сам посчитает ваш доход по методике IPC (§ 6–§ 10 декларации DPFO, строка ř. 42).</p>
-    <div class="hero-note">
-      <span class="dot"></span>
-      <span>Официально сейчас действуют условия раунда <b>ZDP 2026</b>. Раунд ZDP 2027 пока не объявлен: IPC прямо указывает, что параметры следующих раундов могут измениться. Этот расчёт помогает заранее понять свою готовность, а не гарантирует результат будущего раунда.</span>
-    </div>
-    <div class="steps-row">
-      <a href="#video" class="step-chip"><span class="num">1</span> Видео</a>
-      <a href="#guide" class="step-chip"><span class="num">2</span> Гид</a>
-      <a href="#calc" class="step-chip"><span class="num">3</span> Калькулятор</a>
-    </div>
-  </div>
-</div>
-
-<section id="video">
-  <div class="wrap">
-    <div class="card">
-      <h3 style="margin-bottom:2px;">Доходы, учитываемые для ZDP<span class="meta-badge">~10 минут</span></h3>
-      <p class="section-sub" style="margin-bottom:0;">Видео от Натальи: какие доходы считаются, а какие нет, чтобы вы могли подготовиться перед подачей документов.</p>
-      <!-- TODO: когда видео будет готово, заменить .video-frame на embed с YouTube, например:
-           <div class="video-frame" style="border:none;padding:0;">
-             <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ВАШ_ID" title="Доходы, учитываемые для ZDP" frameborder="0" allowfullscreen style="border-radius:var(--radius);"></iframe>
-           </div>
-      -->
-      <div class="video-frame">
-        <div class="play-icon">▶</div>
-        <span>Видео появится здесь</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="guide">
-  <div class="wrap">
-    <div class="card guide-card">
-      <div class="guide-icon">📄</div>
-      <div class="guide-text">
-        <h3>Полный гид по доходам для ZDP<span class="meta-badge">Для тех, кто любит разобраться подробно</span></h3>
-        <p>Подробный разбор: какие доходы учитываются и какие нет, ссылки на законы и официальные разъяснения IPC и Finanční správy.</p>
-      </div>
-      <!-- TODO: когда документ будет готов, заменить href="#" на ссылку на файл/страницу -->
-      <a href="#" class="btn btn-ghost" id="guideDocLink">Открыть гид</a>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="notes-grid">
-      <div class="note-card">
-        <h4>Что мы считаем</h4>
-        <p>Все налогооблагаемые в Чехии доходы, которые формируют základ daně: зарплата, OSVČ, капитальные доходы, аренда, прочие доходы. Не только зарплата и бизнес.</p>
-      </div>
-      <div class="note-card">
-        <h4>Что мы не считаем</h4>
-        <p>Освобождённые от налога доходы: наследство, необлагаемые дары, освобождённая продажа имущества, сбережения на счёте, алименты, окончательно обложенные srážkovou daní выплаты.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="calc">
   <div class="wrap">
+
+    <div style="padding-top:36px;">
+      <span class="eyebrow">ПРОВЕРКА ДОХОДА ДЛЯ ZDP</span>
+      <h1 style="font-size:32px;margin:14px 0 10px;">Калькулятор дохода для ZDP</h1>
+      <p class="lead" style="margin-bottom:16px;">Калькулятор считает ваш доход так же, как он попадает в чешскую декларацию DPFO: по параграфам § 6–§ 10, до строки ř. 42 «Základ daně».</p>
+      <div class="hero-note" style="margin-bottom:28px;">
+        <span class="dot"></span>
+        <span>Официально сейчас действуют условия раунда <b>ZDP 2026</b>. Раунд ZDP 2027 пока не объявлен: параметры следующих раундов могут измениться, если они вообще будут объявлены.</span>
+      </div>
+    </div>
+
 
     <div class="card">
       <div class="section-title">Калькулятор</div>
@@ -439,20 +430,6 @@
 </section>
 
 
-<section>
-  <div class="wrap">
-    <div class="section-title" style="font-size:20px;">Частые вопросы: включается или нет</div>
-    <div class="notes-grid" style="margin-top:16px;">
-      <div class="note-card"><h4>Зарплата</h4><p>Да, если облагается в Чехии: берём налогооблагаемый доход из Potvrzení, не netto.</p></div>
-      <div class="note-card"><h4>OSVČ с paušálním výdajem</h4><p>Да, считаем базу после вычета расходов 80/60/40%, а не сам оборот.</p></div>
-      <div class="note-card"><h4>Paušální režim OSVČ</h4><p>Да, но отдельной фиксированной суммой по pásmo, не через доходы и расходы.</p></div>
-      <div class="note-card"><h4>Дивиденды</h4><p>Иногда: только если входят в чешскую DPFO. Окончательно обложенные srážkovou daní обычно не входят.</p></div>
-      <div class="note-card"><h4>Продажа недвижимости / ценных бумаг</h4><p>Иногда: только налоговая база после расходов, если продажа не освобождена.</p></div>
-      <div class="note-card"><h4>Наследство, сбережения, алименты</h4><p>Нет, эти суммы не входят в доход, учитываемый для ZDP.</p></div>
-    </div>
-  </div>
-</section>
-
 <footer class="site">
   <div class="wrap">
     <div class="cols">
@@ -474,6 +451,35 @@
     </div>
   </div>
 </footer>
+
+<div class="modal-overlay" id="exemptModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Какие доходы освобождены от налога?</h3>
+      <button type="button" class="modal-close" id="exemptModalClose" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="exempt-inner">
+      <p>Не включайте в расчёт доходы, освобождённые от налога: они не формируют základ daně и в декларацию не попадают. Вот самые частые случаи.</p>
+      <div class="exempt-grid">
+        <div class="exempt-item"><b>Социальные выплаты и пособия</b><span>Выплаты из системы социального обеспечения, пособия по болезни, часть пенсионных выплат, пособия по инвалидности, dávky státní sociální podpory a pomoci, příspěvek na péči и другие государственные выплаты. Для ZDP отдельно: humanitární dávka сама по себе доходом не считается.</span></div>
+        <div class="exempt-item"><b>Алименты (výživné)</b><span>Выплаты в рамках обязанности по содержанию освобождены от налога и не увеличивают базу для ZDP.</span></div>
+        <div class="exempt-item"><b>Наследство</b><span>Наследство и завещательный отказ освобождены от налога по § 4a, независимо от суммы.</span></div>
+        <div class="exempt-item"><b>Подарки</b><span>Освобождены подарки от близких родственников и от лиц, с которыми получатель не менее года вёл общее хозяйство. Разовый подарок от другого лица освобождён в пределах 50 000 Kč за год.</span></div>
+        <div class="exempt-item"><b>Продажа личных вещей</b><span>В общем случае освобождена, кроме ценных бумаг и транспортных средств (авто, самолёт, судно), проданных в течение года после покупки, а также имущества, связанного с предпринимательством.</span></div>
+        <div class="exempt-item"><b>Продажа квартиры или дома</b><span>Освобождена, например, при проживании в ней минимум 2 года перед продажей либо при использовании средств на собственную жилищную потребность. Для другой недвижимости действует тест владения 10 лет (с исключениями).</span></div>
+        <div class="exempt-item"><b>Продажа ценных бумаг</b><span>Освобождена, если доход от продажи за год не превышает 100 000 Kč, либо при владении более 3 лет. Есть дополнительные исключения, в том числе для имущества, связанного с бизнесом.</span></div>
+        <div class="exempt-item"><b>Продажа доли в компании</b><span>Освобождена при выполнении условий и владении от 5 лет.</span></div>
+        <div class="exempt-item"><b>Криптоактивы</b><span>На 2026 год освобождены при доходе от продажи до 100 000 Kč за год, либо при владении более 3 лет (с установленными исключениями).</span></div>
+        <div class="exempt-item"><b>Прочие разовые доходы § 10</b><span>Для отдельных видов освобождение действует в пределах 50 000 Kč за год. Лимит распространяется не на все доходы § 10, там есть исключения.</span></div>
+        <div class="exempt-item"><b>Страховые возмещения</b><span>Компенсации имущественного ущерба и большинство страховых выплат освобождены, но есть исключения: например, компенсация потери дохода или выплаты, связанные с предпринимательским имуществом.</span></div>
+        <div class="exempt-item"><b>Стипендии</b><span>Освобождены стипендии из государственного, муниципального или краевого бюджета, средств вузов, публичных исследовательских организаций, средних и высших профессиональных школ.</span></div>
+      </div>
+      <div class="exempt-caution">Если не уверены, облагается ли конкретный доход налогом в Чехии: не добавляйте его в расчёт автоматически, сначала проверьте налоговый режим. Это особенно важно для ZDP, так как в расчёт идёт základ daně / dílčí základ daně, а освобождённые доходы туда не входят. Отдельно: если один освобождённый доход превышает 5 000 000 Kč, в некоторых случаях возникает обязанность уведомить об этом налоговую, даже если сам доход не облагается.</div>
+      <div class="exempt-sources">Источники: Zákon č. 586/1992 Sb., o daních z příjmů, прежде всего § 4 и § 4a (<a href="https://www.zakonyprolidi.cz/cs/1992-586" target="_blank" rel="noopener">актуальная редакция на zakonyprolidi.cz</a>), а также официальный обзор <a href="https://financnisprava.gov.cz/cs/dane/dane/dan-z-prijmu/fyzicke-osoby/ostatni" target="_blank" rel="noopener">Finanční správy об освобождённых и прочих доходах физлиц</a>.</div>
+      <button type="button" class="btn btn-primary" id="exemptModalBack" style="margin-top:22px;width:100%;justify-content:center;">Вернуться к калькулятору</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -535,7 +541,7 @@
     return {
       id: uid(),
       s6: { on:false, employers:[{amountMonthly:0, months:12, mode:'gross'}] },
-      s7: { on:false, mode:'standard', pasmo:1, income:0, expenseType:'zivnost', expenseMode:'percent', actualExpenses:0 },
+      s7: { on:false, mode:'standard', pasmo:1, activities:[{income:0, expenseType:'zivnost', expenseMode:'percent', actualExpenses:0}] },
       s8: { on:false, amount:0 },
       s9: { on:false, income:0, expenseMode:'percent', actualExpenses:0 },
       s10:{ on:false, entries:[{gross:0, expenses:0, exempt:false}] },
@@ -555,15 +561,17 @@
   function calcS7(p){
     if(!p.s7.on) return 0;
     if(p.s7.mode === 'pausalni') return CONFIG.pausal[p.s7.pasmo] || 0;
-    const income = num(p.s7.income);
-    let expenses;
-    if(p.s7.expenseMode === 'percent'){
-      const et = CONFIG.expenseTypes.find(t=>t.id===p.s7.expenseType) || CONFIG.expenseTypes[1];
-      expenses = Math.min(income*et.rate, et.cap);
-    } else {
-      expenses = num(p.s7.actualExpenses);
-    }
-    return income - expenses;
+    return p.s7.activities.reduce((sum,a)=>{
+      const income = num(a.income);
+      let expenses;
+      if(a.expenseMode === 'percent'){
+        const et = CONFIG.expenseTypes.find(t=>t.id===a.expenseType) || CONFIG.expenseTypes[1];
+        expenses = Math.min(income*et.rate, et.cap);
+      } else {
+        expenses = num(a.actualExpenses);
+      }
+      return sum + (income - expenses);
+    }, 0);
   }
   function calcS8(p){ return p.s8.on ? num(p.s8.amount) : 0; }
   function calcS9(p){
@@ -666,7 +674,7 @@
         <div class="field-grid">
           <div class="field">
             <label>Сумма в месяц</label>
-            <input type="number" min="0" data-s6-emp-amount="${i}" value="${e.amountMonthly||0}">
+            <input type="text" inputmode="decimal" data-s6-emp-amount="${i}" value="${e.amountMonthly||0}">
           </div>
           <div class="field">
             <label>Это сумма</label>
@@ -682,13 +690,45 @@
         </div>
         <div class="subnote" data-s6-emp-helper="${i}"></div>
       </div>`).join('');
-    return `${rows}
+    return `<div class="row-intro">Зарплата и другие доходы от работодателя по HPP, DPČ, DPP, а также иные доходы от трудовой деятельности, которые включаются в чешскую налоговую декларацию.</div>
+    ${rows}
       <button class="link-btn" data-s6-add style="margin-top:10px;">+ добавить ещё одного работодателя</button>
       <div class="subnote" style="margin-top:8px;">Точнее всего сумма «до налогов» из трудового договора или Potvrzení: она войдёт в расчёт напрямую. Если знаете только сумму, которая приходит на счёт (netto), выберите этот вариант, и мы приблизительно пересчитаем её в gross по ставкам 2026 года (соцстрах 7,1%, медстрах 4,5%, налог 15%/23%, sleva na poplatníka). Это ориентировочно и не учитывает личные льготы (на детей и т.п.): для точной цифры сверьтесь с výplatní páskou.</div>`;
   }
 
   function s7Html(p){
-    return `
+    const actRows = p.s7.activities.map((a,i)=>`
+      <div class="list-entry" data-act-entry="${i}">
+        <div class="list-entry-head">
+          <b style="font-size:13.5px;">Вид деятельности ${i+1}</b>
+          ${p.s7.activities.length>1?`<button class="remove-btn" data-s7-act-remove="${i}">убрать</button>`:''}
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label>Доходы от этой деятельности за год</label>
+            <input type="text" inputmode="decimal" data-s7-act-income="${i}" value="${a.income||0}">
+          </div>
+          <div class="field">
+            <label>Как считать расходы</label>
+            <select data-s7-act-expmode="${i}">
+              <option value="percent" ${a.expenseMode==='percent'?'selected':''}>Стандартный вычет (% по типу деятельности)</option>
+              <option value="actual" ${a.expenseMode==='actual'?'selected':''}>Знаю точную сумму расходов</option>
+            </select>
+          </div>
+        </div>
+        ${a.expenseMode==='percent' ? `
+          <div class="field" style="margin-top:10px;">
+            <label>Тип деятельности</label>
+            <select data-s7-act-exptype="${i}">${expenseTypeOptions(a.expenseType)}</select>
+          </div>
+        ` : `
+          <div class="field" style="margin-top:10px;">
+            <label>Фактические расходы за год</label>
+            <input type="text" inputmode="decimal" data-s7-act-actual="${i}" value="${a.actualExpenses||0}">
+          </div>
+        `}
+      </div>`).join('');
+    return `<div class="row-intro">Доходы предпринимателя, фрилансера, консультанта, ремесленника и другой самостоятельной деятельности. Учитывается налоговый результат после расходов (фактических или рассчитанных процентом через výdajový paušál).</div>
     <div class="field">
       <label>Режим</label>
       <select data-s7-mode>
@@ -707,49 +747,31 @@
         <span class="warn-note" style="display:block;">Paušální režim считается не по формуле «доходы минус расходы», а IPC берёт фиксированную сумму по выбранному pásmo, независимо от фактического дохода. Если позже вернётесь к обычному режиму, введённые доходы и расходы сохранятся.</span>
       </div>
     ` : `
-      <div class="field-grid" style="margin-top:12px;">
-        <div class="field">
-          <label>Доходы от предпринимательства за год</label>
-          <input type="number" min="0" data-s7-income value="${p.s7.income||0}">
-        </div>
-        <div class="field">
-          <label>Как считать расходы</label>
-          <select data-s7-expmode>
-            <option value="percent" ${p.s7.expenseMode==='percent'?'selected':''}>Стандартный вычет (% по типу деятельности)</option>
-            <option value="actual" ${p.s7.expenseMode==='actual'?'selected':''}>Знаю точную сумму расходов</option>
-          </select>
-        </div>
+      <div style="margin-top:12px;">
+        ${actRows}
+        <button class="link-btn" data-s7-act-add style="margin-top:10px;">+ добавить ещё один вид деятельности</button>
+        <div class="subnote" style="margin-top:8px;">Если ведёте несколько видов деятельности с разным výdajový paušál (например, ремесленную и свободную профессию), добавьте каждую отдельно: так проценты расходов посчитаются верно для каждой.</div>
       </div>
-      ${p.s7.expenseMode==='percent' ? `
-        <div class="field" style="margin-top:12px;">
-          <label>Тип деятельности</label>
-          <select data-s7-exptype>${expenseTypeOptions(p.s7.expenseType)}</select>
-        </div>
-      ` : `
-        <div class="field" style="margin-top:12px;">
-          <label>Фактические расходы за год</label>
-          <input type="number" min="0" data-s7-actual value="${p.s7.actualExpenses||0}">
-        </div>
-      `}
     `}
     <div class="row-result" style="margin-top:10px;">Налоговая база § 7 (ř. 37): <b data-s7-out>0 Kč</b></div>`;
   }
 
   function s8Html(p){
     return `
-    <div class="warn-note">Капитальные доходы (§8): например, проценты по займам, отдельные доходы от капитала и иностранные дивиденды, если они входят в чешскую DPFO. Не включайте доход, окончательно обложенный srážkovou daní и не входящий в DPFO (например, часть банковских процентов), и любые доходы, освобождённые от налога.</div>
+    <div class="row-intro">Доходы, полученные от денежных средств, инвестиций и участия в компаниях: например, дивиденды, проценты по займам, доли в прибыли и другие доходы от капитала.</div>
+    <div class="warn-note" style="margin-top:0;">Указывайте только те капитальные доходы, которые нужно включать в чешскую налоговую декларацию. Доходы, с которых налог уже окончательно удержан у источника в Чехии (srážková daň), повторно в декларацию не вносятся.</div>
     <div class="field" style="margin-top:12px;">
       <label>Сумма капитальных доходов, входящая в чешскую декларацию</label>
-      <input type="number" min="0" data-s8-amount value="${p.s8.amount||0}">
+      <input type="text" inputmode="decimal" data-s8-amount value="${p.s8.amount||0}">
     </div>`;
   }
 
   function s9Html(p){
-    return `
+    return `<div class="row-intro">Доход от долгосрочной аренды недвижимости или её части, когда вы предоставляете помещение в пользование без гостиничных и дополнительных услуг. Краткосрочная аренда (например, через Booking или Airbnb) считается уже в § 7 как предпринимательская деятельность.</div>
     <div class="field-grid">
       <div class="field">
         <label>Доход от аренды за год</label>
-        <input type="number" min="0" data-s9-income value="${p.s9.income||0}">
+        <input type="text" inputmode="decimal" data-s9-income value="${p.s9.income||0}">
       </div>
       <div class="field">
         <label>Как считать расходы</label>
@@ -762,7 +784,7 @@
     ${p.s9.expenseMode==='actual' ? `
       <div class="field" style="margin-top:12px;">
         <label>Фактические расходы за год</label>
-        <input type="number" min="0" data-s9-actual value="${p.s9.actualExpenses||0}">
+        <input type="text" inputmode="decimal" data-s9-actual value="${p.s9.actualExpenses||0}">
       </div>
     `:''}
     <div class="row-result" style="margin-top:10px;">Налоговая база § 9 (ř. 39): <b data-s9-out>0 Kč</b></div>`;
@@ -778,11 +800,11 @@
         <div class="field-grid">
           <div class="field">
             <label>Сумма поступления</label>
-            <input type="number" min="0" data-s10-gross="${i}" value="${e.gross||0}" ${e.exempt?'disabled':''}>
+            <input type="text" inputmode="decimal" data-s10-gross="${i}" value="${e.gross||0}" ${e.exempt?'disabled':''}>
           </div>
           <div class="field">
             <label>Допустимые расходы (цена приобретения и т.п.)</label>
-            <input type="number" min="0" data-s10-expenses="${i}" value="${e.expenses||0}" ${e.exempt?'disabled':''}>
+            <input type="text" inputmode="decimal" data-s10-expenses="${i}" value="${e.expenses||0}" ${e.exempt?'disabled':''}>
           </div>
         </div>
         <label class="checkbox-row">
@@ -790,7 +812,9 @@
           Этот доход освобождён от налога (не входит в расчёт)
         </label>
       </div>`).join('');
-    return `${rows}
+    return `<div class="row-intro">Другие налогооблагаемые доходы, которые не входят в § 6–§ 9: например, продажа недвижимости, ценных бумаг, криптоактивов или другого имущества, разовые и случайные доходы, отдельные виды вознаграждений. Учитываются только доходы, которые не освобождены от налога и должны быть отражены в декларации.</div>
+    <div class="warn-note" style="margin-top:0;">Если сомневаетесь: <button type="button" class="exempt-link-btn" data-open-exempt>прочитайте, какие доходы освобождены от налога</button> и мы не можем их учитывать при расчёте дохода для ZDP.</div>
+    ${rows}
       <button class="link-btn" data-s10-add style="margin-top:10px;">+ добавить ещё один доход</button>
       <div class="subnote">Продажа имущества, дар и т.п. не означают, что вся сумма считается доходом ZDP: учитываем только неосвобождённую налоговую базу.</div>
       <div class="row-result" style="margin-top:10px;">Налоговая база § 10 (ř. 40): <b data-s10-out>0 Kč</b></div>`;
@@ -847,10 +871,27 @@
     // §7
     bindSel(card,'[data-s7-mode]', v=>{ p.s7.mode=v; rerenderPerson(p, idx); });
     bindSel(card,'[data-s7-pasmo]', v=>{ p.s7.pasmo=+v; updateAll(); });
-    bindNum(card,'[data-s7-income]', v=>{ p.s7.income=v; updateAll(); });
-    bindSel(card,'[data-s7-expmode]', v=>{ p.s7.expenseMode=v; rerenderPerson(p, idx); });
-    bindSel(card,'[data-s7-exptype]', v=>{ p.s7.expenseType=v; updateAll(); });
-    bindNum(card,'[data-s7-actual]', v=>{ p.s7.actualExpenses=v; updateAll(); });
+    card.querySelectorAll('[data-s7-act-income]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{ p.s7.activities[+inp.getAttribute('data-s7-act-income')].income = num(inp.value); updateAll(); });
+    });
+    card.querySelectorAll('[data-s7-act-expmode]').forEach(sel=>{
+      sel.addEventListener('change', ()=>{ p.s7.activities[+sel.getAttribute('data-s7-act-expmode')].expenseMode = sel.value; rerenderPerson(p, idx); });
+    });
+    card.querySelectorAll('[data-s7-act-exptype]').forEach(sel=>{
+      sel.addEventListener('change', ()=>{ p.s7.activities[+sel.getAttribute('data-s7-act-exptype')].expenseType = sel.value; updateAll(); });
+    });
+    card.querySelectorAll('[data-s7-act-actual]').forEach(inp=>{
+      inp.addEventListener('input', ()=>{ p.s7.activities[+inp.getAttribute('data-s7-act-actual')].actualExpenses = num(inp.value); updateAll(); });
+    });
+    const s7actAdd = card.querySelector('[data-s7-act-add]');
+    if(s7actAdd) s7actAdd.addEventListener('click', ()=>{ p.s7.activities.push({income:0, expenseType:'zivnost', expenseMode:'percent', actualExpenses:0}); rerenderPerson(p, idx); });
+    card.querySelectorAll('[data-s7-act-remove]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = +btn.getAttribute('data-s7-act-remove');
+        p.s7.activities.splice(i,1);
+        rerenderPerson(p, idx);
+      });
+    });
 
     // §8
     bindNum(card,'[data-s8-amount]', v=>{ p.s8.amount=v; updateAll(); });
@@ -999,6 +1040,35 @@
   $('#children').addEventListener('input', updateAll);
   $('#summaryBar').addEventListener('click', ()=>{
     $('#summaryBox').classList.toggle('expanded');
+  });
+
+  // Модалка "Какие доходы освобождены от налога": открывается из §10 у любого участника
+  function openExemptModal(){
+    $('#exemptModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeExemptModal(){
+    $('#exemptModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', (e)=>{
+    if(e.target.closest('[data-open-exempt]')){ openExemptModal(); }
+  });
+  $('#exemptModalClose').addEventListener('click', closeExemptModal);
+  $('#exemptModalBack').addEventListener('click', closeExemptModal);
+  $('#exemptModal').addEventListener('click', (e)=>{
+    if(e.target.id === 'exemptModal'){ closeExemptModal(); }
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeExemptModal();
+  });
+
+  // Денежные поля: разрешаем пробел как разделитель тысяч, и красиво форматируем при потере фокуса
+  document.addEventListener('focusout', (e)=>{
+    if(e.target.matches('input[inputmode="decimal"]')){
+      const n = num(e.target.value);
+      e.target.value = n ? Math.round(n).toLocaleString('ru-RU').replace(/,/g,' ') : e.target.value;
+    }
   });
 
   renderPeople();
